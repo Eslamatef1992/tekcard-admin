@@ -26,7 +26,7 @@ cd tekcard-admin
 cp .env.example .env     # VITE_API_URL=https://back.teknulugycard.com
 ./deploy.sh
 ```
-Nginx serves `/var/www/tekcard-admin/dist` for `admin.teknulugycard.com` — the config is in the **tekcard-api** repo at `deploy/nginx-teknulugycard.conf`.
+Requires Node 22 at `/opt/node22` (see the tekcard-api README). Nginx serves `/var/www/tekcard-admin/dist` for `admin.teknulugycard.com` — the config is in the **tekcard-api** repo at `deploy/nginx-teknulugycard.conf`.
 
 ## Updating (every push)
 ```bash
