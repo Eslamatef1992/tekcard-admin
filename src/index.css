@@ -103,7 +103,7 @@ textarea { resize: vertical; }
 .img-actions { position: absolute; bottom: 8px; left: 8px; display: flex; gap: 6px; }
 .img-actions label { margin: 0; flex-direction: row; }
 .links-edit { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-.link-row { display: grid; grid-template-columns: 36px 140px 1fr 170px auto; gap: 8px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: #fcfdff; }
+.link-row { display: grid; grid-template-columns: 36px 130px 1fr 150px 150px auto; gap: 8px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: #fcfdff; }
 .link-ic { width: 36px; height: 36px; border-radius: 9px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
 .row-btns { display: flex; gap: 4px; }
 .add-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -130,6 +130,10 @@ textarea { resize: vertical; }
   .preview-col { position: static; max-width: 320px; margin: 0 auto; }
   .link-row { grid-template-columns: 36px 1fr auto; }
   .link-row .grow, .link-row .label-in { grid-column: 1 / -1; }
+}
+@media (min-width: 1101px) and (max-width: 1400px) {
+  .link-row { grid-template-columns: 36px 130px 1fr auto; }
+  .link-row .label-in { grid-column: span 2; }
 }
 @media (max-width: 760px) {
   .shell { flex-direction: column; }

@@ -64,7 +64,7 @@ export default function CardEditor() {
   const set = (k) => (e) => setCard((c) => ({ ...c, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
   const setLink = (i, k, v) => setCard((c) => ({ ...c, links: c.links.map((l, j) => (j === i ? { ...l, [k]: v } : l)) }));
-  const addLink = (platform) => setCard((c) => ({ ...c, links: [...c.links, { _k: ++tmpId, platform, value: '', label: '' }] }));
+  const addLink = (platform) => setCard((c) => ({ ...c, links: [...c.links, { _k: ++tmpId, platform, value: '', label: '', label_ar: '' }] }));
   const removeLink = (i) => setCard((c) => ({ ...c, links: c.links.filter((_, j) => j !== i) }));
   const moveLink = (i, d) => setCard((c) => {
     const links = [...c.links]; const j = i + d;
@@ -94,7 +94,7 @@ export default function CardEditor() {
     e.preventDefault();
     setBusy(true); setMsg(null);
     try {
-      const body = { ...card, links: card.links.map(({ id: lid, platform, value, label }) => ({ id: lid, platform, value, label })) };
+      const body = { ...card, links: card.links.map(({ id: lid, platform, value, label, label_ar }) => ({ id: lid, platform, value, label, label_ar })) };
       const { card: c } = isNew
         ? await api('/cards', { method: 'POST', body })
         : await api(`/cards/${id}`, { method: 'PUT', body });
@@ -219,7 +219,8 @@ export default function CardEditor() {
                     {platforms.map((p) => <option key={p.key} value={p.key}>{p.label}</option>)}
                   </select>
                   <input className="ltr grow" value={l.value} onChange={(e) => setLink(i, 'value', e.target.value)} placeholder={pMap[l.platform]?.placeholder} required />
-                  <input className="label-in" value={l.label || ''} onChange={(e) => setLink(i, 'label', e.target.value)} placeholder="Button text (optional)" />
+                  <input className="label-in" value={l.label || ''} onChange={(e) => setLink(i, 'label', e.target.value)} placeholder="Button text EN (optional)" />
+                  <input className="label-in" dir="rtl" value={l.label_ar || ''} onChange={(e) => setLink(i, 'label_ar', e.target.value)} placeholder="نص الزر بالعربي (اختياري)" />
                   <div className="row-btns">
                     <button type="button" className="btn tiny" onClick={() => moveLink(i, -1)} title="Move up">↑</button>
                     <button type="button" className="btn tiny" onClick={() => moveLink(i, 1)} title="Move down">↓</button>
