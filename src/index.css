@@ -146,3 +146,7 @@ textarea { resize: vertical; }
   .grid2, .images { grid-template-columns: 1fr; }
   .nfc { flex-direction: column; align-items: flex-start; }
 }
+
+.wallet-box { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.wallet-box .switch { margin: 0; align-self: auto; }
+.wallet-box .alert { margin: 0; }

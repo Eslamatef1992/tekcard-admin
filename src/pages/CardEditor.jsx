@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
-import { api } from '../api';
+import { api, API_URL, getToken } from '../api';
 import Icon from '../components/Icon.jsx';
 
 const EMPTY = {
   full_name: '', title: '', company: '', phone: '', email: '', bio: '',
-  slug: '', theme_color: '#0f172a', is_active: true, links: [],
+  slug: '', theme_color: '#0f172a', is_active: true, wallet_enabled: false, links: [],
 };
 
 const slugify = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
@@ -29,13 +29,22 @@ export default function CardEditor() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [wallet, setWallet] = useState(null); // server-side Apple Wallet status
   const qrRef = useRef(null);
 
   const pMap = useMemo(() => Object.fromEntries(platforms.map((p) => [p.key, p])), [platforms]);
 
   useEffect(() => {
     api('/platforms').then((d) => { setPlatforms(d.platforms); setBaseDomain(d.base_domain); });
+    api('/wallet/status').then(setWallet).catch(() => setWallet({ configured: false, error: 'Could not check' }));
   }, []);
+
+  async function downloadPass() {
+    const res = await fetch(`${API_URL}/api/cards/${id}/wallet.pkpass`, { headers: { Authorization: `Bearer ${getToken()}` } });
+    if (!res.ok) { const d = await res.json().catch(() => ({})); setMsg({ ok: false, text: d.error || 'Could not create pass' }); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(await res.blob()); a.download = `${saved.slug}.pkpass`; a.click();
+  }
 
   useEffect(() => {
     setMsg(null);
@@ -185,6 +194,12 @@ export default function CardEditor() {
                 <div className="color"><input type="color" value={card.theme_color} onChange={set('theme_color')} /><span className="ltr">{card.theme_color}</span></div>
               </label>
               <label className="switch"><input type="checkbox" checked={card.is_active} onChange={set('is_active')} /><span>Card is active</span></label>
+            </div>
+            <div className="wallet-box">
+              <label className="switch"><input type="checkbox" checked={!!card.wallet_enabled} onChange={set('wallet_enabled')} />
+                <span>Apple Wallet pass <small className="muted">— shows "Add to Apple Wallet" on iPhone / Mac</small></span></label>
+              {wallet && !wallet.configured && <div className="alert warn">Apple Wallet certificates are not installed on the server yet ({wallet.error}). The button stays hidden until they are.</div>}
+              {wallet?.configured && saved && <button type="button" className="btn tiny" onClick={downloadPass}>Download test pass</button>}
             </div>
           </section>
 
